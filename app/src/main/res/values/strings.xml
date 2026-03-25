@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SafeKids</string>
+    <string name="accessibility_service_description">SafeKids monitors YouTube Kids to detect violent or inappropriate content and protects your child from gradual exposure to harmful videos.</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_welcome_title">ברוכים הבאים ל-SafeKids</string>
+    <string name="onboarding_welcome_subtitle">הגנה חכמה על הילדים שלך מתוכן אלים ביוטיוב</string>
+    <string name="onboarding_step_pin">הגדר קוד הורה</string>
+    <string name="onboarding_step_accessibility">הפעל שירות נגישות</string>
+    <string name="onboarding_step_overlay">אפשר תצוגה על גבי אפליקציות</string>
+    <string name="onboarding_step_done">הכל מוכן!</string>
+    <string name="btn_next">הבא</string>
+    <string name="btn_start">התחל להגן</string>
+    <string name="btn_grant_permission">אשר הרשאה</string>
+
+    <!-- PIN -->
+    <string name="pin_title">הזן קוד הורה</string>
+    <string name="pin_set_title">הגדר קוד הורה (4 ספרות)</string>
+    <string name="pin_confirm_title">אשר קוד הורה</string>
+    <string name="pin_error_mismatch">הקודים לא תואמים, נסה שוב</string>
+    <string name="pin_error_wrong">קוד שגוי</string>
+
+    <!-- Block Screen -->
+    <string name="block_title">אופס! 🛑</string>
+    <string name="block_message">הסרטון הזה לא מתאים לצפייה.\nבוא נמצא סרטון אחר! 🌟</string>
+    <string name="block_btn_back">חזרה לסרטונים בטוחים</string>
+    <string name="block_btn_parent">כניסת הורה</string>
+
+    <!-- Dashboard -->
+    <string name="dashboard_title">לוח הורים</string>
+    <string name="dashboard_blacklist">רשימה שחורה</string>
+    <string name="dashboard_activity_log">יומן פעילות</string>
+    <string name="dashboard_settings">הגדרות</string>
+    <string name="dashboard_stats">סטטיסטיקות</string>
+    <string name="dashboard_add_channel">הוסף ערוץ לחסימה</string>
+    <string name="dashboard_add_keyword">הוסף מילת מפתח</string>
+    <string name="dashboard_sensitivity">רגישות סינון</string>
+    <string name="sensitivity_strict">קפדני</string>
+    <string name="sensitivity_balanced">מאוזן</string>
+    <string name="sensitivity_relaxed">מרוכך</string>
+
+    <!-- Main -->
+    <string name="main_protection_active">ההגנה פעילה ✓</string>
+    <string name="main_protection_inactive">ההגנה כבויה ✗</string>
+    <string name="main_open_dashboard">לוח הורים</string>
+    <string name="main_videos_blocked_today">סרטונים חסומים היום</string>
+    <string name="main_escalation_alerts">התראות הסלמה</string>
+</resources>

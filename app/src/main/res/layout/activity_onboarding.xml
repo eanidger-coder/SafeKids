@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="@color/sk_background"
+    android:layoutDirection="rtl"
+    android:padding="32dp">
+
+    <!-- Step indicator -->
+    <TextView
+        android:id="@+id/tvStepIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1/5"
+        android:textSize="16sp"
+        android:textColor="@color/sk_primary"
+        android:background="@color/sk_primary_light"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="4dp" />
+
+    <!-- Step icon -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="🛡️"
+        android:textSize="72sp"
+        android:layout_marginTop="40dp" />
+
+    <!-- Step title -->
+    <TextView
+        android:id="@+id/tvStepTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/onboarding_welcome_title"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:textColor="@color/sk_on_background"
+        android:gravity="center"
+        android:layout_marginTop="24dp" />
+
+    <!-- Step description -->
+    <TextView
+        android:id="@+id/tvStepDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/onboarding_welcome_subtitle"
+        android:textSize="16sp"
+        android:textColor="@color/sk_on_surface"
+        android:gravity="center"
+        android:lineSpacingExtra="4dp"
+        android:layout_marginTop="16dp" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <!-- Action button -->
+    <Button
+        android:id="@+id/btnOnboardingAction"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="@string/btn_next"
+        android:textSize="18sp"
+        android:backgroundTint="@color/sk_primary"
+        android:layout_marginBottom="24dp" />
+
+</LinearLayout>

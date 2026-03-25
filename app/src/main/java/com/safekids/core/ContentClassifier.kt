@@ -1,0 +1,232 @@
+package com.safekids.core
+
+/**
+ * ContentClassifier — Layer 1 of SafeKids detection engine.
+ *
+ * Scans video titles, descriptions, and channel names for violent or
+ * inappropriate content using weighted keyword matching in multiple languages.
+ */
+class ContentClassifier {
+
+    data class ContentScore(
+        val totalScore: Float,
+        val categories: List<CategoryMatch>,
+        val isBlocked: Boolean
+    )
+
+    data class CategoryMatch(
+        val category: Category,
+        val score: Float,
+        val matchedTerms: List<String>
+    )
+
+    enum class Category(val weight: Float, val labelHe: String) {
+        VIOLENCE_PHYSICAL(0.9f, "אלימות פיזית"),
+        VIOLENCE_VERBAL(0.5f, "אלימות מילולית"),
+        HORROR_KIDS(0.8f, "אימה לילדים"),
+        ELSAGATE(1.0f, "תוכן מטעה"),
+        WEAPONS(0.7f, "נשק"),
+        DARK_THEMES(0.85f, "נושאים אפלים");
+    }
+
+    // Threshold can be adjusted by parent (strict=0.3, balanced=0.5, relaxed=0.7)
+    var blockThreshold: Float = 0.5f
+
+    // Custom keywords added by parents
+    private val customBlacklist = mutableSetOf<String>()
+
+    private val keywordDatabase: Map<Category, List<String>> = mapOf(
+        Category.VIOLENCE_PHYSICAL to listOf(
+            // English
+            "fight", "punch", "kick", "hit", "beat", "attack", "smash",
+            "destroy", "kill", "murder", "slap", "shoot", "stab", "choke",
+            "strangle", "combat", "battle", "war", "wrestle", "knockout",
+            "brutal", "violent", "blood", "bleeding", "injury",
+            // Hebrew
+            "מכות", "הכאה", "נלחם", "נלחמים", "קרב", "מלחמה", "תקיפה",
+            "תוקף", "בועט", "מכה", "הורג", "רוצח", "יורה", "דוקר",
+            "חונק", "מרביץ", "אלימות", "אלים", "דם", "פציעה",
+            "מתאגרף", "אגרוף", "בעיטה", "סטירה",
+            // Arabic
+            "قتال", "ضرب", "عنف", "حرب"
+        ),
+
+        Category.VIOLENCE_VERBAL to listOf(
+            // English
+            "stupid", "idiot", "hate", "shut up", "dumb", "loser",
+            "ugly", "fat", "bully", "bullying", "mean", "curse",
+            // Hebrew
+            "טיפש", "מטומטם", "שונא", "שתוק", "מכוער", "שמן",
+            "בוזז", "בריונות", "בריון", "קללה", "מקלל", "אידיוט",
+            "טמבל", "דביל", "חמור"
+        ),
+
+        Category.HORROR_KIDS to listOf(
+            // Brainrot / Modern inappropriate
+            "huggy wuggy", "poppy playtime", "mommy long legs",
+            "catnap", "dogday", "smiling critters",
+            "skibidi", "skibidi toilet",
+            "siren head", "cartoon cat", "cartoon dog",
+            "baldi", "baldi basics",
+            "granny", "granny game", "granny horror",
+            "garten of banban", "banban",
+            "fnaf", "five nights at freddy", "freddy fazbear",
+            "jumpscare", "creepypasta", "slenderman",
+            "trevor henderson", "backrooms",
+            // Hebrew equivalents
+            "האגי ואגי", "פופי פלייטיים", "אמא רגליים ארוכות",
+            "סקיבידי", "סקיבידי טוילט",
+            "ראש סירנה", "חתול מצויר",
+            "באלדי", "גראני", "גראני משחק",
+            "באנבאן", "גארטן אוף באנבאן",
+            "פרדי", "חמש לילות אצל פרדי",
+            "ג'אמפסקר", "סלנדרמן"
+        ),
+
+        Category.ELSAGATE to listOf(
+            // Elsagate-style disturbing content disguised as kids content
+            "elsa injection", "elsa pregnant", "spiderman pregnant",
+            "pregnant elsa", "bad baby", "bad babies",
+            "joker prank", "joker vs", "evil elsa",
+            "frozen prank", "spiderman poop", "poop challenge",
+            "injection challenge", "doctor injection",
+            "finger family gone wrong", "wrong heads",
+            "learn colors gone wrong", "surprise egg horror",
+            "johny johny scary", "cocomelon scary",
+            // Hebrew
+            "אלזה הזרקה", "ספיידרמן בהריון", "תינוק רע",
+            "ג'וקר נגד", "אלזה רעה", "אתגר קקי"
+        ),
+
+        Category.WEAPONS to listOf(
+            // English
+            "gun", "rifle", "pistol", "sword", "knife", "weapon",
+            "bomb", "grenade", "missile", "sniper", "shotgun",
+            "machine gun", "ak47", "ak-47",
+            // Hebrew
+            "אקדח", "רובה", "חרב", "סכין", "נשק", "פצצה",
+            "רימון", "טיל", "צלף", "מקלע"
+        ),
+
+        Category.DARK_THEMES to listOf(
+            // English
+            "death", "dead", "die", "dying", "funeral", "grave",
+            "ghost", "demon", "devil", "hell", "torture",
+            "kidnap", "kidnapping", "suicide", "poison",
+            "nightmare", "scared", "terrified", "horror",
+            // Hebrew
+            "מוות", "מת", "גוסס", "לוויה", "קבר", "רוח רפאים",
+            "שד", "שטן", "גיהנם", "עינויים", "חטיפה",
+            "התאבדות", "רעל", "סיוט", "אימה", "פחד"
+        )
+    )
+
+    // Known violent shows/characters
+    private val violentShows = listOf(
+        // English
+        "ninja turtles fight", "tmnt battle", "tmnt combat",
+        "power rangers fight", "power rangers battle",
+        "dragon ball fight", "dragon ball z fight",
+        "naruto fight", "naruto battle", "naruto vs",
+        "one piece fight", "attack on titan",
+        "mortal kombat", "street fighter",
+        "ninjago battle", "ninjago fight",
+        "transformers battle", "transformers war",
+        "ben 10 fight", "ben 10 battle",
+        "spiderman fight", "spiderman vs", "spider-man fight",
+        "batman fight", "batman vs",
+        "avengers fight", "avengers battle",
+        "hulk smash", "hulk angry", "hulk fight",
+        // Hebrew
+        "צבי הנינג'ה נלחמים", "צבי נינגה קרב",
+        "פאוור ריינג'רס קרב", "פאוור ריינג'רס נלחמים",
+        "דרגון בול קרב", "נארוטו נלחם", "נארוטו נגד",
+        "ספיידרמן נלחם", "ספיידרמן נגד", "ספיידרמן קרב",
+        "באטמן נלחם", "באטמן נגד",
+        "הנוקמים קרב", "האלק מנפץ", "האלק כועס",
+        "בן 10 נלחם", "נינג'גו קרב"
+    )
+
+    /**
+     * Classify content extracted from YouTube Kids screen.
+     */
+    fun classify(text: String): ContentScore {
+        val normalizedText = text.lowercase().trim()
+        val categoryMatches = mutableListOf<CategoryMatch>()
+
+        // Check each category
+        for ((category, keywords) in keywordDatabase) {
+            val matched = keywords.filter { keyword ->
+                normalizedText.contains(keyword.lowercase())
+            }
+            if (matched.isNotEmpty()) {
+                categoryMatches.add(
+                    CategoryMatch(
+                        category = category,
+                        score = category.weight * (matched.size.coerceAtMost(3).toFloat() / 3f),
+                        matchedTerms = matched
+                    )
+                )
+            }
+        }
+
+        // Check violent shows
+        val showMatches = violentShows.filter { show ->
+            normalizedText.contains(show.lowercase())
+        }
+        if (showMatches.isNotEmpty()) {
+            categoryMatches.add(
+                CategoryMatch(
+                    category = Category.VIOLENCE_PHYSICAL,
+                    score = 0.75f,
+                    matchedTerms = showMatches
+                )
+            )
+        }
+
+        // Check custom parent blacklist
+        val customMatches = customBlacklist.filter { custom ->
+            normalizedText.contains(custom.lowercase())
+        }
+        if (customMatches.isNotEmpty()) {
+            categoryMatches.add(
+                CategoryMatch(
+                    category = Category.ELSAGATE, // treat custom blacklist as highest priority
+                    score = 1.0f,
+                    matchedTerms = customMatches.toList()
+                )
+            )
+        }
+
+        // Calculate total score (weighted average of top matches)
+        val totalScore = if (categoryMatches.isEmpty()) 0f
+        else categoryMatches.maxOf { it.score }
+
+        return ContentScore(
+            totalScore = totalScore,
+            categories = categoryMatches,
+            isBlocked = totalScore >= blockThreshold
+        )
+    }
+
+    /**
+     * Update the custom blacklist from parent-managed keywords.
+     */
+    fun updateCustomBlacklist(keywords: List<String>) {
+        customBlacklist.clear()
+        customBlacklist.addAll(keywords.map { it.lowercase() })
+    }
+
+    /**
+     * Set sensitivity level.
+     */
+    fun setSensitivity(level: SensitivityLevel) {
+        blockThreshold = level.threshold
+    }
+
+    enum class SensitivityLevel(val threshold: Float, val labelHe: String) {
+        STRICT(0.3f, "קפדני"),
+        BALANCED(0.5f, "מאוזן"),
+        RELAXED(0.7f, "מרוכך")
+    }
+}
