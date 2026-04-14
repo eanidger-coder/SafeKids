@@ -26,18 +26,23 @@ import kotlinx.coroutines.launch
  * ParentDashboardActivity — PIN-protected parent control center.
  * Manage blacklists, view activity logs, adjust sensitivity.
  */
-class ParentDashboardActivity : AppCompatActivity() {
+class ParentDashboardActivity : BaseParentActivity() {
 
     private lateinit var prefManager: PreferenceManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // If BaseParentActivity redirected to PIN, don't initialize views
+        if (!isSecurityCleared) return
+
         setContentView(R.layout.activity_parent_dashboard)
 
         prefManager = PreferenceManager(this)
 
         setupBlacklistSection()
         setupSensitivitySlider()
+        setupProtectionToggle()
         setupActivityLog()
     }
 
@@ -45,7 +50,7 @@ class ParentDashboardActivity : AppCompatActivity() {
         val db = SafeKidsApp.instance.database
 
         // Add channel button
-        findViewById<Button>(R.id.btnAddChannel).setOnClickListener {
+        findViewById<android.widget.ImageButton>(R.id.btnAddChannel).setOnClickListener {
             showAddDialog("הוסף ערוץ לחסימה", "שם הערוץ") { name ->
                 lifecycleScope.launch {
                     db.blacklistDao().insertChannel(
@@ -57,7 +62,7 @@ class ParentDashboardActivity : AppCompatActivity() {
         }
 
         // Add keyword button
-        findViewById<Button>(R.id.btnAddKeyword).setOnClickListener {
+        findViewById<android.widget.ImageButton>(R.id.btnAddKeyword).setOnClickListener {
             showAddDialog("הוסף מילת מפתח", "מילת מפתח") { keyword ->
                 lifecycleScope.launch {
                     db.blacklistDao().insertKeyword(
@@ -133,6 +138,30 @@ class ParentDashboardActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupProtectionToggle() {
+        val btnToggle = findViewById<Button>(R.id.btnToggleProtection)
+        updateToggleButton(btnToggle)
+
+        btnToggle.setOnClickListener {
+            prefManager.protectionEnabled = !prefManager.protectionEnabled
+            updateToggleButton(btnToggle)
+            val status = if (prefManager.protectionEnabled) "מופעלת" else "כבויה"
+            Toast.makeText(this, "ההגנה $status", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun updateToggleButton(btn: Button) {
+        if (prefManager.protectionEnabled) {
+            btn.text = "כבה הגנה"
+            btn.setBackgroundColor(getColor(R.color.sk_error))
+            btn.setTextColor(getColor(android.R.color.white))
+        } else {
+            btn.text = "הפעל הגנה"
+            btn.setBackgroundColor(getColor(R.color.sk_neon_cyan))
+            btn.setTextColor(getColor(R.color.sk_deep_space))
+        }
+    }
+
     private fun setupActivityLog() {
         val tvLogSummary = findViewById<TextView>(R.id.tvLogSummary)
         val db = SafeKidsApp.instance.database
@@ -140,7 +169,7 @@ class ParentDashboardActivity : AppCompatActivity() {
         lifecycleScope.launch {
             db.blockedEventDao().getRecent(20).collectLatest { events ->
                 if (events.isEmpty()) {
-                    tvLogSummary.text = "אין אירועים עדיין"
+                    tvLogSummary.text = "אין אירועי חסימה עדיין. המערכת סורקת ותוצאות יופיעו כאן."
                 } else {
                     val logText = events.joinToString("\n\n") { event ->
                         val time = java.text.SimpleDateFormat("dd/MM HH:mm", java.util.Locale.getDefault())

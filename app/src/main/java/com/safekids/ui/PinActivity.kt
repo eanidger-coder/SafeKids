@@ -1,5 +1,6 @@
 package com.safekids.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
@@ -103,6 +104,24 @@ class PinActivity : AppCompatActivity() {
             }
             "verify", "unlock" -> {
                 if (prefManager.verifyPin(currentPin.toString())) {
+                    ParentSessionManager.authenticate()
+                    
+                    val targetActivity = intent.getStringExtra("target_activity")
+                    if (targetActivity != null) {
+                        try {
+                            // If we weren't started for a result (e.g. from BaseParentActivity),
+                            // we need to start the activity ourselves.
+                            if (callingActivity == null) {
+                                val targetClass = Class.forName(targetActivity)
+                                val targetIntent = Intent(this, targetClass)
+                                targetIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                                startActivity(targetIntent)
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }
+                    
                     setResult(RESULT_OK)
                     finish()
                 } else {

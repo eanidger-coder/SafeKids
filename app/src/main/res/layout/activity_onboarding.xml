@@ -1,70 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:background="@color/sk_background"
-    android:layoutDirection="rtl"
-    android:padding="32dp">
+    android:layoutDirection="rtl">
 
-    <!-- Step indicator -->
+    <!-- Premium Background -->
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/safekids_background_premium" />
+
+    <!-- Progress Indicator Overlay -->
     <TextView
         android:id="@+id/tvStepIndicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="1/5"
-        android:textSize="16sp"
-        android:textColor="@color/sk_primary"
-        android:background="@color/sk_primary_light"
+        android:layout_marginTop="48dp"
+        android:background="@drawable/glass_card_bg"
         android:paddingHorizontal="16dp"
-        android:paddingVertical="4dp" />
-
-    <!-- Step icon -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="🛡️"
-        android:textSize="72sp"
-        android:layout_marginTop="40dp" />
-
-    <!-- Step title -->
-    <TextView
-        android:id="@+id/tvStepTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/onboarding_welcome_title"
-        android:textSize="28sp"
+        android:paddingVertical="6dp"
+        android:text="1/5"
+        android:textColor="@color/sk_neon_cyan"
+        android:textSize="14sp"
         android:textStyle="bold"
-        android:textColor="@color/sk_on_background"
-        android:gravity="center"
-        android:layout_marginTop="24dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Step description -->
-    <TextView
-        android:id="@+id/tvStepDescription"
-        android:layout_width="wrap_content"
+    <!-- Glass Container -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/glassContainer"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/onboarding_welcome_subtitle"
-        android:textSize="16sp"
-        android:textColor="@color/sk_on_surface"
-        android:gravity="center"
-        android:lineSpacingExtra="4dp"
-        android:layout_marginTop="16dp" />
+        android:layout_marginHorizontal="32dp"
+        app:cardBackgroundColor="@color/sk_glass_background"
+        app:cardCornerRadius="32dp"
+        app:cardElevation="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/btnOnboardingAction"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvStepIndicator"
+        app:strokeColor="@color/sk_glass_outline"
+        app:strokeWidth="1dp">
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="32dp">
 
-    <!-- Action button -->
-    <Button
+            <!-- Step icon emoji -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🛡️"
+                android:textSize="64sp" />
+
+            <!-- Step title -->
+            <TextView
+                android:id="@+id/tvStepTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center"
+                android:text="@string/onboarding_welcome_title"
+                android:textColor="@color/sk_white"
+                android:textSize="26sp" />
+
+            <!-- Step description -->
+            <TextView
+                android:id="@+id/tvStepDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:alpha="0.8"
+                android:gravity="center"
+                android:lineSpacingExtra="6dp"
+                android:text="@string/onboarding_welcome_subtitle"
+                android:textColor="@color/sk_white"
+                android:textSize="15sp" />
+
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Action Button -->
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnOnboardingAction"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_width="0dp"
+        android:layout_height="64dp"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginBottom="48dp"
+        android:backgroundTint="@color/sk_neon_cyan"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
         android:text="@string/btn_next"
-        android:textSize="18sp"
-        android:backgroundTint="@color/sk_primary"
-        android:layout_marginBottom="24dp" />
+        android:textColor="@color/sk_deep_space"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:cornerRadius="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

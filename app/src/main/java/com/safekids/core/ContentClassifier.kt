@@ -23,7 +23,7 @@ class ContentClassifier {
     enum class Category(val weight: Float, val labelHe: String) {
         VIOLENCE_PHYSICAL(0.9f, "אלימות פיזית"),
         VIOLENCE_VERBAL(0.5f, "אלימות מילולית"),
-        HORROR_KIDS(0.8f, "אימה לילדים"),
+        HORROR_KIDS(1.0f, "אימה לילדים"),
         ELSAGATE(1.0f, "תוכן מטעה"),
         WEAPONS(0.7f, "נשק"),
         DARK_THEMES(0.85f, "נושאים אפלים");
@@ -46,7 +46,10 @@ class ContentClassifier {
             "מכות", "הכאה", "נלחם", "נלחמים", "קרב", "מלחמה", "תקיפה",
             "תוקף", "בועט", "מכה", "הורג", "רוצח", "יורה", "דוקר",
             "חונק", "מרביץ", "אלימות", "אלים", "דם", "פציעה",
-            "מתאגרף", "אגרוף", "בעיטה", "סטירה",
+            "מתאגרף", "אגרוף", "בעיטה", "סטירה", "הרוג", "רצח",
+            "פיצוץ", "מפוצץ", "להרוג", "מלחמות", "קרבות", "דם", "פצוע", "גופה", "מת",
+            "אלימות בחברה", "קטטה", "דקירות", "דקירה", "מכות רצח", "מרביצים",
+            "בועטים", "חונקים", "שורפים", "שריפה", "פיגוע", "טרור",
             // Arabic
             "قتال", "ضرب", "عنف", "حرب"
         ),
@@ -114,10 +117,13 @@ class ContentClassifier {
             "ghost", "demon", "devil", "hell", "torture",
             "kidnap", "kidnapping", "suicide", "poison",
             "nightmare", "scared", "terrified", "horror",
+            "huggy wuggy", "skibidi toilet", "momo", "blue monster",
+            "jumpscare", "scary compilation", "creepy pasta",
             // Hebrew
             "מוות", "מת", "גוסס", "לוויה", "קבר", "רוח רפאים",
             "שד", "שטן", "גיהנם", "עינויים", "חטיפה",
-            "התאבדות", "רעל", "סיוט", "אימה", "פחד"
+            "התאבדות", "רעל", "סיוט", "אימה", "פחד",
+            "האגי וואגי", "סקיבידי טואלט", "מפחיד מאוד", "קריפי"
         )
     )
 
@@ -138,13 +144,16 @@ class ContentClassifier {
         "avengers fight", "avengers battle",
         "hulk smash", "hulk angry", "hulk fight",
         // Hebrew
+        "מרגיז", "מעצבן", "מכות", "אלימות", "מפחיד",
         "צבי הנינג'ה נלחמים", "צבי נינגה קרב",
         "פאוור ריינג'רס קרב", "פאוור ריינג'רס נלחמים",
         "דרגון בול קרב", "נארוטו נלחם", "נארוטו נגד",
         "ספיידרמן נלחם", "ספיידרמן נגד", "ספיידרמן קרב",
         "באטמן נלחם", "באטמן נגד",
         "הנוקמים קרב", "האלק מנפץ", "האלק כועס",
-        "בן 10 נלחם", "נינג'גו קרב"
+        "בן 10 נלחם", "נינג'גו קרב", "יובל המבולבל",
+        "huggy wuggy", "האגי וואגי", "skibidi toilet", "סקיבידי טואלט",
+        "מכות", "קרב", "אלימות", "דם", "סירנה"
     )
 
     /**
@@ -160,10 +169,14 @@ class ContentClassifier {
                 normalizedText.contains(keyword.lowercase())
             }
             if (matched.isNotEmpty()) {
+                // High-weight categories (Violence, Horror) get an immediate high score
+                val baseScore = if (category.weight >= 0.9f) 0.8f else category.weight
+                val extraBonus = (matched.size.coerceAtMost(5).toFloat() / 5f) * 0.2f
+                
                 categoryMatches.add(
                     CategoryMatch(
                         category = category,
-                        score = category.weight * (matched.size.coerceAtMost(3).toFloat() / 3f),
+                        score = (baseScore + extraBonus).coerceAtMost(1.0f),
                         matchedTerms = matched
                     )
                 )
@@ -178,7 +191,7 @@ class ContentClassifier {
             categoryMatches.add(
                 CategoryMatch(
                     category = Category.VIOLENCE_PHYSICAL,
-                    score = 0.75f,
+                    score = 0.95f,
                     matchedTerms = showMatches
                 )
             )
@@ -191,21 +204,21 @@ class ContentClassifier {
         if (customMatches.isNotEmpty()) {
             categoryMatches.add(
                 CategoryMatch(
-                    category = Category.ELSAGATE, // treat custom blacklist as highest priority
-                    score = 1.0f,
+                    category = Category.ELSAGATE,
+                    score = 2.0f, // Absolute override
                     matchedTerms = customMatches.toList()
                 )
             )
         }
 
-        // Calculate total score (weighted average of top matches)
+        // Calculate total score (highest match wins)
         val totalScore = if (categoryMatches.isEmpty()) 0f
         else categoryMatches.maxOf { it.score }
 
         return ContentScore(
             totalScore = totalScore,
             categories = categoryMatches,
-            isBlocked = totalScore >= blockThreshold
+            isBlocked = totalScore >= blockThreshold || totalScore > 1.0f
         )
     }
 

@@ -1,64 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
     android:background="@color/sk_background"
-    android:layoutDirection="rtl"
-    android:padding="32dp">
+    android:layoutDirection="rtl">
 
-    <!-- Lock icon -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="🔒"
-        android:textSize="64sp" />
+    <!-- Premium Background Image -->
+    <ImageView
+        android:id="@+id/ivBackground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/safekids_background_premium"
+        android:alpha="0.4" />
 
-    <!-- Title -->
-    <TextView
-        android:id="@+id/tvPinTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/pin_title"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="@color/sk_on_background"
-        android:layout_marginTop="16dp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="32dp">
 
-    <!-- PIN dots display -->
-    <TextView
-        android:id="@+id/tvPinDisplay"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="○○○○"
-        android:textSize="40sp"
-        android:letterSpacing="0.5"
-        android:textColor="@color/sk_primary"
-        android:layout_marginTop="32dp" />
+        <!-- Shield Icon with Glow -->
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp">
+            <View
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@drawable/status_glow_circle"
+                android:layout_gravity="center"
+                android:alpha="0.3" />
+            <ImageView
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_security_shield"
+                app:tint="@color/sk_primary" />
+        </FrameLayout>
 
-    <!-- Keypad Grid -->
-    <GridLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:columnCount="3"
-        android:rowCount="4"
-        android:useDefaultMargins="true">
+        <!-- Title -->
+        <TextView
+            android:id="@+id/tvPinTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pin_title"
+            android:textSize="26sp"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="@color/sk_on_background"
+            android:letterSpacing="0.05" />
 
-        <Button android:id="@+id/btn1" style="@style/Widget.Material3.Button.TonalButton" android:layout_width="80dp" android:layout_height="64dp" android:text="1" android:textSize="24sp" />
-        <Button android:id="@+id/btn2" style="@style/Widget.Material3.Button.TonalButton" android:layout_width="80dp" android:layout_height="64dp" android:text="2" android:textSize="24sp" />
-        <Button android:id="@+id/btn3" style="@style/Widget.Material3.Button.TonalButton" android:layout_width="80dp" android:layout_height="64dp" android:text="3" android:textSize="24sp" />
-        <Button android:id="@+id/btn4" style="@style/Widget.Material3.Button.TonalButton" android:layout_width="80dp" android:layout_height="64dp" android:text="4" android:textSize="24sp" />
-        <Button android:id="@+id/btn5" style="@style/Widget.Material3.Button.TonalButton" android:layout_width="80dp" android:layout_height="64dp" android:text="5" android:textSize="24sp" />
-        <Button android:id="@+id/btn6" style="@style/Widget.Material3.Button.TonalButton" android:layout_width="80dp" android:layout_height="64dp" android:text="6" android:textSize="24sp" />
-        <Button android:id="@+id/btn7" style="@style/Widget.Material3.Button.TonalButton" android:layout_width="80dp" android:layout_height="64dp" android:text="7" android:textSize="24sp" />
-        <Button android:id="@+id/btn8" style="@style/Widget.Material3.Button.TonalButton" android:layout_width="80dp" android:layout_height="64dp" android:text="8" android:textSize="24sp" />
-        <Button android:id="@+id/btn9" style="@style/Widget.Material3.Button.TonalButton" android:layout_width="80dp" android:layout_height="64dp" android:text="9" android:textSize="24sp" />
-        <Button android:id="@+id/btnBackspace" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="80dp" android:layout_height="64dp" android:text="⌫" android:textSize="24sp" />
-        <Button android:id="@+id/btn0" style="@style/Widget.Material3.Button.TonalButton" android:layout_width="80dp" android:layout_height="64dp" android:text="0" android:textSize="24sp" />
-        <Space android:layout_width="80dp" android:layout_height="64dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="גישה מאובטחת להורים בלבד"
+            android:textSize="14sp"
+            android:textColor="@color/sk_text_secondary"
+            android:layout_marginTop="4dp" />
 
-    </GridLayout>
+        <!-- PIN dots display -->
+        <TextView
+            android:id="@+id/tvPinDisplay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="○○○○"
+            android:textSize="48sp"
+            android:letterSpacing="0.4"
+            android:textColor="@color/sk_primary"
+            android:layout_marginTop="40dp" />
 
-</LinearLayout>
+        <!-- Keypad in a Glass Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="48dp"
+            app:cardCornerRadius="32dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/sk_glass_outline"
+            android:backgroundTint="@color/sk_glass_surface">
+
+            <GridLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:columnCount="3"
+                android:rowCount="4"
+                android:useDefaultMargins="true">
+
+                <Button android:id="@+id/btn1" style="@style/Widget.Material3.Button.TextButton" android:layout_width="80dp" android:layout_height="80dp" android:text="1" android:textSize="28sp" android:textColor="@color/sk_on_background" />
+                <Button android:id="@+id/btn2" style="@style/Widget.Material3.Button.TextButton" android:layout_width="80dp" android:layout_height="80dp" android:text="2" android:textSize="28sp" android:textColor="@color/sk_on_background" />
+                <Button android:id="@+id/btn3" style="@style/Widget.Material3.Button.TextButton" android:layout_width="80dp" android:layout_height="80dp" android:text="3" android:textSize="28sp" android:textColor="@color/sk_on_background" />
+                
+                <Button android:id="@+id/btn4" style="@style/Widget.Material3.Button.TextButton" android:layout_width="80dp" android:layout_height="80dp" android:text="4" android:textSize="28sp" android:textColor="@color/sk_on_background" />
+                <Button android:id="@+id/btn5" style="@style/Widget.Material3.Button.TextButton" android:layout_width="80dp" android:layout_height="80dp" android:text="5" android:textSize="28sp" android:textColor="@color/sk_on_background" />
+                <Button android:id="@+id/btn6" style="@style/Widget.Material3.Button.TextButton" android:layout_width="80dp" android:layout_height="80dp" android:text="6" android:textSize="28sp" android:textColor="@color/sk_on_background" />
+                
+                <Button android:id="@+id/btn7" style="@style/Widget.Material3.Button.TextButton" android:layout_width="80dp" android:layout_height="80dp" android:text="7" android:textSize="28sp" android:textColor="@color/sk_on_background" />
+                <Button android:id="@+id/btn8" style="@style/Widget.Material3.Button.TextButton" android:layout_width="80dp" android:layout_height="80dp" android:text="8" android:textSize="28sp" android:textColor="@color/sk_on_background" />
+                <Button android:id="@+id/btn9" style="@style/Widget.Material3.Button.TextButton" android:layout_width="80dp" android:layout_height="80dp" android:text="9" android:textSize="28sp" android:textColor="@color/sk_on_background" />
+                
+                <Button android:id="@+id/btnBackspace" style="@style/Widget.Material3.Button.TextButton" android:layout_width="80dp" android:layout_height="80dp" android:text="⌫" android:textSize="24sp" android:textColor="@color/sk_error" />
+                <Button android:id="@+id/btn0" style="@style/Widget.Material3.Button.TextButton" android:layout_width="80dp" android:layout_height="80dp" android:text="0" android:textSize="28sp" android:textColor="@color/sk_on_background" />
+                <Space android:layout_width="80dp" android:layout_height="80dp" />
+
+            </GridLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

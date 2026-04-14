@@ -7,11 +7,16 @@
     <string name="onboarding_welcome_title">ברוכים הבאים ל-SafeKids</string>
     <string name="onboarding_welcome_subtitle">הגנה חכמה על הילדים שלך מתוכן אלים ביוטיוב</string>
     <string name="onboarding_step_pin">הגדר קוד הורה</string>
+    <string name="onboarding_step_pin_subtitle">הגדר קוד סודי בן 4 ספרות.\nרק ההורים יוכלו לגשת להגדרות.</string>
     <string name="onboarding_step_accessibility">הפעל שירות נגישות</string>
+    <string name="onboarding_step_accessibility_subtitle">SafeKids צריך הרשאת נגישות כדי\nלעקוב אחר תוכן ביוטיוב קידס.</string>
     <string name="onboarding_step_overlay">אפשר תצוגה על גבי אפליקציות</string>
+    <string name="onboarding_step_overlay_subtitle">SafeKids צריך הרשאה להציג\nמסך חסימה מעל אפליקציות אחרות.</string>
     <string name="onboarding_step_done">הכל מוכן!</string>
+    <string name="onboarding_step_done_subtitle">הכל מוכן! SafeKids תגן על\nהילדים שלך מתוכן אלים ביוטיוב.</string>
     <string name="btn_next">הבא</string>
     <string name="btn_start">התחל להגן</string>
+
     <string name="btn_grant_permission">אשר הרשאה</string>
 
     <!-- PIN -->
@@ -41,9 +46,12 @@
     <string name="sensitivity_relaxed">מרוכך</string>
 
     <!-- Main -->
-    <string name="main_protection_active">ההגנה פעילה ✓</string>
-    <string name="main_protection_inactive">ההגנה כבויה ✗</string>
-    <string name="main_open_dashboard">לוח הורים</string>
-    <string name="main_videos_blocked_today">סרטונים חסומים היום</string>
-    <string name="main_escalation_alerts">התראות הסלמה</string>
+    <string name="main_protection_active">ההגנה פעילה וסורקת ✓</string>
+    <string name="main_protection_inactive">אזהרה: ההגנה כבויה ✗</string>
+    <string name="main_accessibility_disabled">שירות הנגישות כבוי - לחץ להפעלה</string>
+    <string name="main_open_dashboard">ניהול ובקרת הורים</string>
+    <string name="notification_title">SafeKids - הגנה פעילה</string>
+    <string name="notification_message">אנחנו שומרים על הילדים שלך ביוטיוב ברגע זה.</string>
+    <string name="status_scanning">סורק תוכן ביוטיוב...</string>
+    <string name="status_idle">ממתין לפתיחת יוטיוב קידס</string>
 </resources>

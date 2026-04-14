@@ -63,7 +63,7 @@ class OnboardingActivity : AppCompatActivity() {
             }
             1 -> { // Set PIN
                 tvStepTitle.text = getString(R.string.onboarding_step_pin)
-                tvStepDescription.text = "הגדר קוד סודי בן 4 ספרות.\nרק ההורים יוכלו לגשת להגדרות."
+                tvStepDescription.text = getString(R.string.onboarding_step_pin_subtitle)
                 btnAction.text = getString(R.string.btn_next)
                 btnAction.setOnClickListener {
                     val intent = Intent(this, PinActivity::class.java).apply {
@@ -74,7 +74,7 @@ class OnboardingActivity : AppCompatActivity() {
             }
             2 -> { // Accessibility Service
                 tvStepTitle.text = getString(R.string.onboarding_step_accessibility)
-                tvStepDescription.text = "SafeKids צריך הרשאת נגישות כדי\nלעקוב אחר תוכן ביוטיוב קידס."
+                tvStepDescription.text = getString(R.string.onboarding_step_accessibility_subtitle)
                 btnAction.text = getString(R.string.btn_grant_permission)
                 btnAction.setOnClickListener {
                     val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
@@ -83,7 +83,7 @@ class OnboardingActivity : AppCompatActivity() {
             }
             3 -> { // Overlay permission
                 tvStepTitle.text = getString(R.string.onboarding_step_overlay)
-                tvStepDescription.text = "SafeKids צריך הרשאה להציג\nמסך חסימה מעל אפליקציות אחרות."
+                tvStepDescription.text = getString(R.string.onboarding_step_overlay_subtitle)
                 btnAction.text = getString(R.string.btn_grant_permission)
                 btnAction.setOnClickListener {
                     val intent = Intent(
@@ -95,7 +95,7 @@ class OnboardingActivity : AppCompatActivity() {
             }
             4 -> { // Done
                 tvStepTitle.text = getString(R.string.onboarding_step_done)
-                tvStepDescription.text = "הכל מוכן! SafeKids תגן על\nהילדים שלך מתוכן אלים ביוטיוב."
+                tvStepDescription.text = getString(R.string.onboarding_step_done_subtitle)
                 btnAction.text = getString(R.string.btn_start)
                 btnAction.setOnClickListener {
                     prefManager.onboardingDone = true

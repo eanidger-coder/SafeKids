@@ -3,8 +3,7 @@
 
     <!-- Required for overlay blocking screen -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <!-- Required to detect foreground app -->
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <!-- Notifications -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
@@ -15,15 +14,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SafeKids">
 
-        <!-- Main Entry -->
+        <!-- Splash Screen (Main Entry) -->
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".ui.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Main Dashboard -->
+        <activity
+            android:name=".ui.MainActivity"
+            android:exported="true" />
 
         <!-- Onboarding -->
         <activity android:name=".ui.OnboardingActivity" />
@@ -39,6 +43,7 @@
             android:name=".ui.BlockedActivity"
             android:excludeFromRecents="true"
             android:launchMode="singleInstance"
+            android:taskAffinity=""
             android:theme="@style/Theme.SafeKids.Overlay" />
 
         <!-- Accessibility Service for YouTube Kids monitoring -->

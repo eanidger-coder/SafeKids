@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.safekids.R
 
@@ -23,8 +24,8 @@ class BlockedActivity : AppCompatActivity() {
         // Set the appropriate message based on reason
         val messageView = findViewById<TextView>(R.id.tvBlockMessage)
         messageView.text = when (blockedReason) {
-            "escalation" -> "שמנו לב שהסרטונים הולכים\nולהיות פחות מתאימים.\nבוא נבחר משהו אחר! 🌈"
-            "blacklist" -> "הסרטון הזה נחסם על ידי ההורים.\nבוא נמצא סרטון יותר כיף! 🎈"
+            "escalation" -> "שמנו לב שהסרטונים הולכים\nולהיות פחות מתאימים.\nבוא נבחר משהו אחר! \uD83C\uDF08"
+            "blacklist" -> "הסרטון הזה נחסם על ידי ההורים.\nבוא נמצא סרטון יותר כיף! \uD83C\uDF88"
             else -> getString(R.string.block_message)
         }
 
@@ -47,11 +48,12 @@ class BlockedActivity : AppCompatActivity() {
             startActivity(pinIntent)
             finish()
         }
-    }
 
-    // Prevent back button from bypassing the block
-    @Deprecated("Use OnBackPressedCallback")
-    override fun onBackPressed() {
-        // Do nothing — must use the buttons
+        // Prevent back button from bypassing the block (works on Android 13+)
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // Do nothing — child must use the buttons
+            }
+        })
     }
 }

@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.SafeKids" parent="Theme.Material3.Light.NoActionBar">
+    <style name="Theme.SafeKids" parent="Theme.Material3.Dark.NoActionBar">
         <item name="colorPrimary">@color/sk_primary</item>
-        <item name="colorPrimaryDark">@color/sk_primary_dark</item>
         <item name="colorSecondary">@color/sk_secondary</item>
         <item name="colorOnPrimary">@color/sk_on_primary</item>
         <item name="android:colorBackground">@color/sk_background</item>
         <item name="colorSurface">@color/sk_surface</item>
         <item name="colorError">@color/sk_error</item>
-        <item name="android:statusBarColor">@color/sk_primary_dark</item>
+        <item name="android:statusBarColor">@color/sk_background</item>
         <item name="android:navigationBarColor">@color/sk_background</item>
+        <item name="android:windowTranslucentStatus">false</item>
     </style>
 
-    <style name="Theme.SafeKids.Overlay" parent="Theme.Material3.Light.NoActionBar">
-        <item name="android:windowIsTranslucent">false</item>
+    <style name="Theme.SafeKids.Overlay" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@color/sk_overlay_bg</item>
-        <item name="android:statusBarColor">@color/sk_block_bg</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+        <item name="android:statusBarColor">@color/sk_background</item>
     </style>
 </resources>

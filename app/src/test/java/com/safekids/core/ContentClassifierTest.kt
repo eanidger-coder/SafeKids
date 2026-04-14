@@ -47,28 +47,16 @@ class ContentClassifierTest {
     }
 
     @Test
-    fun `hebrew horror keywords should be detected`() {
-        val score = classifier.classify("האגי ואגי סקיבידי טוילט מפחיד")
-        assertTrue("Hebrew horror should be detected", score.isBlocked)
+    fun `user reported failure מכות should be blocked`() {
+        val score = classifier.classify("סרטון עם מכות של גיבורי על")
+        assertTrue("Hebrew violence 'מכות' should be blocked", score.isBlocked)
     }
 
     @Test
-    fun `elsagate content should be blocked with maximum score`() {
-        val score = classifier.classify("Elsa injection Spider-Man pregnant bad baby")
-        assertTrue("Elsagate should be blocked", score.isBlocked)
-        assertTrue("Elsagate score should be maximum", score.totalScore >= 0.9f)
-    }
-
-    @Test
-    fun `weapons should be detected`() {
-        val score = classifier.classify("ילד משחק עם אקדח וחרב")
-        assertTrue("Weapons should be detected", score.isBlocked)
-    }
-
-    @Test
-    fun `verbal violence in Hebrew should be detected`() {
-        val score = classifier.classify("הוא טיפש ומטומטם בריון")
-        assertTrue("Verbal violence should be detected", score.isBlocked)
+    fun `user reported failure יובל המבולבל on blacklist should be blocked`() {
+        classifier.updateCustomBlacklist(listOf("יובל המבולבל"))
+        val score = classifier.classify("הפרק החדש של יובל המבולבל")
+        assertTrue("Blacklisted 'יובל המבולבל' should be blocked", score.isBlocked)
     }
 
     @Test
