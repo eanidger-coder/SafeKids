@@ -2,6 +2,7 @@ package com.safekids.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
@@ -14,12 +15,17 @@ import com.safekids.R
  */
 class BlockedActivity : AppCompatActivity() {
 
+    companion object {
+        private const val TAG = "SafeKids-Blocked"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_blocked)
 
         val blockedTitle = intent.getStringExtra("blocked_title") ?: ""
         val blockedReason = intent.getStringExtra("blocked_reason") ?: "keyword"
+        val blockedPackage = intent.getStringExtra("blocked_package") ?: ""
 
         // Set the appropriate message based on reason
         val messageView = findViewById<TextView>(R.id.tvBlockMessage)
@@ -29,14 +35,11 @@ class BlockedActivity : AppCompatActivity() {
             else -> getString(R.string.block_message)
         }
 
-        // Back to safe videos button
+        // Back to safe videos button — relaunch the same app fresh (YouTube Kids
+        // / YouTube) so the child lands on a clean home page instead of being
+        // kicked out to the phone home screen.
         findViewById<Button>(R.id.btnBackToSafe).setOnClickListener {
-            // Navigate to home screen
-            val homeIntent = Intent(Intent.ACTION_MAIN).apply {
-                addCategory(Intent.CATEGORY_HOME)
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            }
-            startActivity(homeIntent)
+            returnToSafeHome(blockedPackage)
             finish()
         }
 
@@ -52,8 +55,47 @@ class BlockedActivity : AppCompatActivity() {
         // Prevent back button from bypassing the block (works on Android 13+)
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                // Do nothing — child must use the buttons
+                // Back button behaves like "back to safe" — return to the clean
+                // home of the source app rather than exit.
+                returnToSafeHome(blockedPackage)
+                finish()
             }
         })
+    }
+
+    /**
+     * Re-open the source app (YouTube Kids / YouTube) on a clean home screen
+     * so the child continues inside the app, just not on the blocked video.
+     * Falls back to the Android home launcher if the source app can't be
+     * re-launched (uninstalled / unknown package).
+     */
+    private fun returnToSafeHome(sourcePackage: String) {
+        val pm = packageManager
+        val launchIntent = if (sourcePackage.isNotEmpty()) {
+            pm.getLaunchIntentForPackage(sourcePackage)
+        } else null
+
+        if (launchIntent != null) {
+            launchIntent.apply {
+                // Clear the task so the child lands on the app's home screen,
+                // not back on the offending video.
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or
+                    Intent.FLAG_ACTIVITY_CLEAR_TASK or
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP
+            }
+            try {
+                startActivity(launchIntent)
+                return
+            } catch (e: Exception) {
+                Log.w(TAG, "Failed to relaunch $sourcePackage, falling back to home", e)
+            }
+        }
+
+        // Fallback — Android home launcher
+        val homeIntent = Intent(Intent.ACTION_MAIN).apply {
+            addCategory(Intent.CATEGORY_HOME)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+        startActivity(homeIntent)
     }
 }
