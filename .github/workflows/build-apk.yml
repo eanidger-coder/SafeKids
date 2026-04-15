@@ -10,6 +10,9 @@ on:
       - main
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     name: Build debug APK
@@ -94,3 +97,22 @@ jobs:
             app/build/outputs/logs/
           if-no-files-found: ignore
           retention-days: 14
+
+      # Publish a public "latest" GitHub Release so the APK can be downloaded
+      # directly from a phone browser with no GitHub login required.
+      - name: Publish APK to GitHub Release (latest)
+        if: success()
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: "SafeKids latest build"
+          body: |
+            Automated debug build from commit ${{ github.sha }} on branch `${{ github.ref_name }}`.
+
+            Direct-download link (no login needed):
+            https://github.com/${{ github.repository }}/releases/download/latest/SafeKids-debug.apk
+          files: dist/SafeKids-debug.apk
+          make_latest: "true"
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
