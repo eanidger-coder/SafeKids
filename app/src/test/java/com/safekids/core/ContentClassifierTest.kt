@@ -198,6 +198,26 @@ class ContentClassifierTest {
     }
 
     @Test
+    fun `user reported failure יואבי נשרף should be blocked`() {
+        val score = classifier.classify("יואבי נשרף??!! יואבי והאמא הנדחפת | עופר ומאור")
+        assertTrue("'יואבי נשרף' must be blocked", score.isBlocked)
+    }
+
+    @Test
+    fun `hebrew passive burn forms should be blocked`() {
+        assertTrue(classifier.classify("הילד נשרף בטעות").isBlocked)
+        assertTrue(classifier.classify("הבית נשרפה במהירות").isBlocked)
+        assertTrue(classifier.classify("הבית עולה באש בוער").isBlocked)
+    }
+
+    @Test
+    fun `hebrew passive injury forms should be blocked`() {
+        assertTrue(classifier.classify("הילד נפצע קשה").isBlocked)
+        assertTrue(classifier.classify("המכונית התפוצצה").isBlocked)
+        assertTrue(classifier.classify("הכלב נחנק").isBlocked)
+    }
+
+    @Test
     fun `total score should never exceed reasonable bounds`() {
         // Custom blacklist sets score 2.0f internally; API surface should still be usable.
         classifier.updateCustomBlacklist(listOf("xxx"))
