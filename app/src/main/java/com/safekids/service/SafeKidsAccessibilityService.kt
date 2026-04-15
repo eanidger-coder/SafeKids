@@ -180,8 +180,9 @@ class SafeKidsAccessibilityService : AccessibilityService() {
                         )
                     )
 
-                    showBlockScreen(blockTitle, 
-                        if (channelBlocked) "blacklist" else if (escalation.isEscalating) "escalation" else "keyword"
+                    showBlockScreen(blockTitle,
+                        if (channelBlocked) "blacklist" else if (escalation.isEscalating) "escalation" else "keyword",
+                        packageName
                     )
                 }
             }
@@ -268,11 +269,18 @@ class SafeKidsAccessibilityService : AccessibilityService() {
             .minByOrNull { it.length } ?: ""
     }
 
-    private fun showBlockScreen(title: String, reason: String) {
+    private fun showBlockScreen(title: String, reason: String, sourcePackage: String) {
+        // Go back one step inside the source app so the offending video is no
+        // longer on screen beneath our overlay, then present the block activity.
+        try {
+            performGlobalAction(GLOBAL_ACTION_BACK)
+        } catch (_: Exception) { /* best-effort */ }
+
         val intent = Intent(applicationContext, BlockedActivity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
             putExtra("blocked_title", title)
             putExtra("blocked_reason", reason)
+            putExtra("blocked_package", sourcePackage)
         }
         startActivity(intent)
     }
